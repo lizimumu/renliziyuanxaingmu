@@ -50,6 +50,12 @@
 
     </el-form>
   </div>
+  <!-- 环境白变量的作用 -->
+  <!-- 1.正常公司中，有几个环境，4个 开发 dev 测试test 预发 uat 线上pro
+ 在项目中如何配置这几个环境通过.env配置  base Url  api
+ 开发环境的接口前缀-/api
+ 线上环境的接口前缀/prod-api--->
+
 </template>
 
 <script>
