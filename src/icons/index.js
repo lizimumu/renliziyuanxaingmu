@@ -15,9 +15,9 @@ const req = require.context('./svg', false, /\.svg$/)
 // !['./dashboard.svg', './example.svg', './eye-open.svg', './eye.svg', './form.svg', './link.svg', './nested.svg', './password.svg', './table.svg', './tree.svg', './user.svg']
 // !req函数  ==>根据路径 ，对应的模块导入进来来
 // 引入模块化
-console.log(req)
-console.log(req('./dashboard.svg'))
-console.log(req.keys())
+// console.log(req)
+// console.log(req('./dashboard.svg'))
+// console.log(req.keys())
 
 const requireAll = requireContext => {
   return requireContext.keys().map(value => requireContext(value))
@@ -27,4 +27,4 @@ const requireAll = requireContext => {
 // 长度和原来一样
 // 映射
 requireAll(req)
-console.log(requireAll(req))
+// console.log(requireAll(req))
