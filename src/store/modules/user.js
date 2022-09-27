@@ -4,7 +4,8 @@ export default {
   namespaced: true,
   state: {
     token: null,
-    userInfo: {}
+    userInfo: {},
+    hrsaasTime: ''
   },
   mutations: {
     SET_TOKEN(state, token) {
@@ -16,6 +17,12 @@ export default {
     // 清除用户名
     REMOVE_USER_INFO(state) {
       state.userInfo = {}
+    },
+    REMOVE_TOKEN(state) {
+      state.token = null
+    },
+    SET_HRSAAS_TIME(state, hrsaasTime) {
+      state.hrsaasTime = hrsaasTime
     }
   },
   actions: {
@@ -25,6 +32,7 @@ export default {
       const data = await login(loginData)
       console.log(data)
       commit('SET_TOKEN', data)
+      commit('SET_HRSAAS_TIME', new Date().getTime())
     },
     async getUserInfo({ commit }) {
       const res = await getUserInfoAPI()
@@ -34,6 +42,11 @@ export default {
       // 接口请求
       commit('SET_USER_INFO', result)
       return JSON.parse(JSON.stringify(result))/* 后面会用  深拷贝一份返回出去 */
+    },
+    logout({ commit }) {
+      // 清除原来数据===》token userinfo
+      commit('REMOVE_USER_INFO')
+      commit('REMOVE_TOKEN')
     }
   }
 }
