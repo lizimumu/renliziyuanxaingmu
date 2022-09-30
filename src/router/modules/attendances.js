@@ -1,14 +1,14 @@
 import Layout from '@/layout'
 export default
 {
-  path: '/attendances ',
+  path: '/attendances',
   name: 'attendances ',
   component: Layout,
   children: [
     {
-      path: '',
+      path: 'attendances',
       component: () => import('@/views/attendances/index.vue'),
-      meta: { title: '考勤', icon: 'skill' }
+      meta: { title: '组织架构', icon: 'skill' }
     }
   ]
 }
