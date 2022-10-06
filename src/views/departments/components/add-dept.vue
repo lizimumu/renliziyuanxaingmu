@@ -1,6 +1,6 @@
 <template>
   <!-- 新增部门的弹层 -->
-  <el-dialog title="新增部门" :visible="dialogVisible" @close="handleClose">
+  <el-dialog :title="title" :visible="dialogVisible" @close="handleClose">
     <!-- 表单组件  el-form   label-width设置label的宽度   -->
     <!-- 匿名插槽 -->
     <el-form
@@ -37,7 +37,7 @@
 
 <script>
 import { getDepartments } from '@/api/departments'
-import { getEmployeeSimple, addDepartments } from '@/api/employees'
+import { getEmployeeSimple, addDepartments, updateDepartments } from '@/api/employees'
 export default {
   name: 'HrsaasAddDept',
   props: {
@@ -56,8 +56,18 @@ export default {
       // 拿到所有的部门数据，一个个比较过去 如果出现重复 校验不通过 否则通过 不通过把错误报出去
       const { depts } = await getDepartments()
       console.log(depts)
-      const isRepeat = depts.some(ele => ele.code === value)
+      let isRepeat = true
+      if (this.formData.id) {
+        // !进行判断筛选  编辑模式下 筛选排除自己不等于自己
+        isRepeat = depts.some(ele => ele.id !== this.formData.id && ele.code === value)
+      } else {
+        isRepeat = depts.some(ele => ele.code === value)
+      }
+
       isRepeat ? callback(new Error(`模块下已经存在${value}`)) : callback()
+
+      // !编辑模式下，让我自己和自己效验了
+      // !解决方案，对比的过程中，把自己排除调，然后再去对比
     }
     // !部门名称，
     const nameCheck = async(rule, value, callback) => {
@@ -65,12 +75,20 @@ export default {
       const { depts } = await getDepartments()
       console.log(depts)
       console.log(this.treeNode.id)
-      const deptstj = depts.filter(item => item.pid === this.treeNode.id)
-      // console.log(deptstj)
-      // !some进项判筛选 找得到爆出错误
-      const isRepeat = deptstj.some(ele => ele.name === value)
-
+      let isRepeat = true
+      if (this.formData.id) {
+        // !进行判断筛选  编辑模式下 筛选排除自己不等于自己 然后再 进行判断
+        const deptstj1 = depts.filter(item => item.pid === this.treeNode.pid && item.id !== this.treeNode.id)
+        console.log(deptstj1)
+        isRepeat = deptstj1.some(ele => ele.name === value)
+      } else {
+        const deptstj = depts.filter(item => item.pid === this.treeNode.id)
+        isRepeat = deptstj.some(ele => ele.name === value)
+      }
       isRepeat ? callback(new Error(`该部门下已经存在${value}部门名称`)) : callback()
+      // !编辑模式下，存在问题，无法准确效验统计部门数据（统计的列表找的不对）要找当前部门
+      // !解决方案 ，先找到所有与自同级的部门数据 ，然后排除自己
+      // !some进项判筛选 找得到爆出错误
     }
     return {
       peoples: [],
@@ -94,6 +112,11 @@ export default {
         introduce: [{ required: true, message: '部门介绍必填', trigger: 'blur' },
           { min: 1, max: 300, message: '部门介绍1~300个字符', trigger: 'blur' }]
       }
+    }
+  },
+  computed: {
+    title() {
+      return this.formData.id ? '编辑模式' : '新增模式'
     }
   },
   created() {
@@ -120,8 +143,10 @@ export default {
       try {
         this.loading = true
         await this.$refs.addDeptForm.validate()
-        await addDepartments({ ...this.formData, pid: this.treeNode.id })
-        this.$message.success('新增成功')
+        if (this.formData.id) {
+          await updateDepartments(this.formData)
+        } else { await addDepartments({ ...this.formData, pid: this.treeNode.id }) }
+        this.$message.success(`${this.formData.id ? '编辑' : '新增'}成功`)
         this.$parent.getDepartments()
         this.handleClose()
       } catch (e) {
