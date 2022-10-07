@@ -6,7 +6,7 @@ export const imgerror = {
     // binding 当前指令相关信息
     console.log(binding)
     // vnode 虚拟节点
-    console.log(vnode)
+    // console.log(vnode)
     el.onerror = () => {
       el.src = binding.value
     }
