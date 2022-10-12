@@ -1,3 +1,4 @@
+
 // !全局注册组件步骤，
 // !引入需要注册的组件，用数组收集起来
 //  !Vue.use(plugins)
@@ -14,6 +15,10 @@
 //   }
 // }
 // const components = [PageTools]
+
+import * as filters from '@/filters'
+// console.log('ssss', filters)
+// console.log(Object.keys(filters))
 // !require.context() 第一个参数路径，第二个参数是否查找子级 第三个正则要查找的文件后缀
 const fn = require.context('./', true, /\.vue$/)
 // !console.log(fn.keys()) // 模块路径
@@ -26,8 +31,11 @@ const components = fn.keys().map(ele => {
 // !简写可以直击暴露一个函数
 export default (Vue) => {
   components.forEach(ele => {
-    console.log(ele.default)
+    // console.log(ele.default)
     Vue.component(ele.default.name, ele.default)
+  })
+  Object.keys(filters).forEach(key => {
+    Vue.filter(key, filters[key])
   })
 }
 

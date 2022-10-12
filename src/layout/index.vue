@@ -5,8 +5,10 @@
     <div class="main-container">
       <div :class="{'fixed-header':fixedHeader}">
         <navbar />
+
       </div>
       <app-main />
+
     </div>
   </div>
 </template>
@@ -44,6 +46,7 @@ export default {
   },
 
   methods: {
+
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
     }

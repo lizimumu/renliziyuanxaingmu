@@ -75,6 +75,7 @@ export default {
     showPwd() {
       this.passwordType === 'password' ? this.passwordType = '' : this.passwordType = 'password'
       this.$nextTick(() => {
+        console.log(this.$refs.pwd)
         this.$refs.pwd.focus()
       })
     },

@@ -119,6 +119,7 @@ export function tranListTToTreeData(list, rootValue) {
   const arr = []
   list.forEach(ele => {
     if (ele.pid === rootValue) {
+      // console.log(list)
       const children = tranListTToTreeData(list, ele.id)
       if (children.length) {
         ele.children = children
