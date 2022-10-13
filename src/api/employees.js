@@ -80,3 +80,37 @@ export function importEmployee(data) {
     data
   })
 }
+/**
+ * 获取员工的
+ * @param {} id
+ * @returns
+ */
+export function getEmployeesInfo(id) {
+  return request({
+    url: `/employees/${id}/personalInfo`
+
+  })
+}
+export function saveEmployeesInfo(data) {
+  return request({
+    url: `/employees/${data.userId}/personalInfo`,
+    method: 'PUT',
+    data
+  })
+}
+/**
+ * 获取员工列表
+ */
+export function getEmployeesJopInfo(id) {
+  return request({
+    url: `/employees/${id}/jobs`
+
+  })
+}
+export function saveEmployeesJopInfo(data) {
+  return request({
+    url: `/employees/${data.userId}/jobs`,
+    method: 'PUT',
+    data
+  })
+}
