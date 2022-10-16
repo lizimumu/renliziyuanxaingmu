@@ -1,7 +1,8 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
-    <svg-icon icon-class="eye-open" />
+    <Upload-img @on-success="onsuccess1" />
+
+    <Upload-img @on-success="onsuccess2" />
   </div>
 </template>
 
@@ -14,11 +15,19 @@ export default {
     ...mapGetters([
       'name'
     ])
-  }
+  },
   // async  created() {
   //   const res = await this.$store.dispatch('user/getUserInfo')
   //   console.log(res)
-  // }
+  // },
+  methods: {
+    onsuccess1(value) {
+      console.log(123, value)
+    },
+    onsuccess2(value) {
+      console.log(456, value)
+    }
+  }
 }
 </script>
 

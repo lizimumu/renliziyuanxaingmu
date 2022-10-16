@@ -16,6 +16,11 @@
       <el-table v-loading="loading" border :data="list">
         <el-table-column label="序号" type="index" sortable="" width="80" />
         <el-table-column label="姓名" prop="username" />
+        <el-table-column label="头像">
+          <template slot-scope="{row}">
+            <img :src="row.staffPhoto" alt="" style="width:100px;height:100px;" @click="showQrCode(row.staffPhoto)">
+          </template>
+        </el-table-column>
         <el-table-column label="工号" prop="workNumber" />
         <el-table-column label="聘用形式" prop="formOfEmployment" :formatter="formatterFn">
           <!-- <template slot-scope="{row}">
@@ -60,6 +65,19 @@
 
     <!-- 相当于：:dialogVisible='dialogVisible' @update:dialogVisible='val=> dialogVisible=value ' -->
     <addEmployeeList :dialog-visible.sync="dialogVisible" />
+
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisibleQrCode"
+      width="50%"
+      :before-close="handleClose"
+    >
+      <canvas id="canvas" />
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisibleQrCode = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -67,6 +85,7 @@
 import { getEmployeeList, delEmployee } from '@/api/employees'
 import EnumHireType from '@/api/constant/employees'
 import addEmployeeList from './components/add-employee.vue'
+import QRCode from 'qrcode'
 export default {
   name: 'HrsaasIndex',
   components: {
@@ -81,6 +100,7 @@ export default {
       },
       dialogVisible: false,
       list: [],
+      dialogVisibleQrCode: false,
       total: 0,
       hireType: EnumHireType.hireType
     }
@@ -148,6 +168,7 @@ export default {
             const find = this.hireType.find(hire => {
               return hire.id === item[exportExcelMapPath[h]]
             })
+
             return find ? find.value : '未知'
           }
           // 循环表头
@@ -171,6 +192,18 @@ export default {
     goDetail(row) {
     // 利用动态路由占位传参，获取对应的id 跳转页面
       this.$router.push('/employees/detail/' + row.id)
+    },
+    async  showQrCode(staffPhoto) {
+      if (!staffPhoto) return this.$message.error('暂无头像')
+      this.dialogVisibleQrCode = true
+      await this.$nextTick()
+      QRCode.toCanvas(document.getElementById('canvas'), staffPhoto, function(error) {
+        if (error) console.error(error)
+        console.log('success!')
+      })
+    },
+    handleClose() {
+
     } }
 }
 </script>

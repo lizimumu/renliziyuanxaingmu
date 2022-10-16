@@ -16,6 +16,8 @@ import '@/icons' // icon
 import '@/permission' // permission control
 import * as directive from '@/directive'
 // 引入暴露出的对象并且注册
+import Print from 'vue-print-nb'
+Vue.use(Print)
 import components from './components/index'
 Vue.use(components)
 console.log(directive)
